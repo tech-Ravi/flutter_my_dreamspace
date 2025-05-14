@@ -1,14 +1,12 @@
 # flutter_my_dreamspace_app
 
-A new Flutter project.
-
-## Description
-
-This is a flutter app, which is basically for logging your moods and dreams and User can see weekly/Monthly mood chart or graph.
-
 # 🌙 MyDreamSpace - A Self-Reflection Journal App
 
 **MyDreamSpace** is a polished, production-ready Flutter app that helps users **log dreams**, **track moods**, and **view insightful summaries**. It features smooth animations, dark mode, and real-time Supabase backend integration to create a seamless self-reflection experience.
+
+---
+
+> _“Track your inner world with elegance and insight.” — MyDreamSpace App_
 
 ---
 
@@ -60,6 +58,7 @@ This is a flutter app, which is basically for logging your moods and dreams and 
 | Frontend      | Flutter                             |
 | Backend       | Supabase (Auth + Database)          |
 | Charts        | `fl_chart`|
+| Design Pt.       | MVVM    |
 | Animations    | Lottie, AnimatedBuilder      |
 | State Mgmt    | Riverpod |
 | Sharing       | `share_plus    |
@@ -125,7 +124,7 @@ lib/
 
 ```bash
 git clone https://github.com/tech-Ravi/flutter_my_dreamspace.git
-cd mydreamspace
+cd flutter_my_dreamspace
 ```
 
 ### 2. Install Dependencies
@@ -142,17 +141,27 @@ flutter pub get
   - **Database** with the following table:
 
 ```sql
+-- Create Dreams Table
 create table dreams (
   id uuid primary key default uuid_generate_v4(),
-  user_id uuid,
-  title text,
-  description text,
-  mood text,
-  created_at timestamp with time zone default now()
+  user_id uuid references auth.users not null,
+  title text not null,
+  description text not null,
+  mood text not null,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone
 );
+
+alter table dreams enable row level security;
+
+-- see dreams by userID
+create policy "Users can only access their own dreams"
+  on dreams for all
+  using (auth.uid() = user_id);
+
 ```
 
-- Add your Supabase `URL` and `Anon Key` to your environment variables
+- Add your Supabase `URL` and `Anon Key` to your environment variables (into your .env file or Create new one)
 
 ---
 
@@ -169,28 +178,16 @@ Use `flutter_dotenv` or similar package to load environment variables.
 
 ---
 
-## 📸 Screenshots (Optional)
+## 📸 Screenshots & App Screen recording
 
-| Dream Log | Dream Journal | Mood Tracker |
-|-----------|----------------|---------------|
-| ![Log](./assets/screenshots/log.png) | ![Journal](./assets/screenshots/journal.png) | ![Tracker](./assets/screenshots/insights.png) |
+[![portfolio](https://img.shields.io/badge/screenshots-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://drive.google.com/drive/folders/1EMnisp7lkYBVDQx9rDqFrgz6kOn-Smta?usp=sharing)
 
-> _Replace image paths with actual screenshots._
+[![portfolio](https://img.shields.io/badge/screen%20recording-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://drive.google.com/drive/folders/1wIohsNFtJR9M5pZkpC5-QkFF_WvTB0Yj?usp=sharing)
 
 ---
 
 ## 👤 Author
 
-**Your Name**  
-[Portfolio or LinkedIn](https://your-link.com)  
-[GitHub](https://github.com/your-username)
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-> _“Track your inner world with elegance and insight.” — MyDreamSpace Team_
+**Ravi Prakash**  
+[LinkedIn](https://www.linkedin.com/in/ravi-prakash01/)  
+[Portfolio](https://ravi-prakash-jaiswal-1.jimdosite.com/portfolio/)
